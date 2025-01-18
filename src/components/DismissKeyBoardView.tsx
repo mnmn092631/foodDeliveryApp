@@ -4,9 +4,8 @@ import {
   Keyboard,
   StyleProp,
   ViewStyle,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
 interface Props {
   children: React.ReactNode;
@@ -15,12 +14,9 @@ interface Props {
 export default function DismissKeyboardView({children, ...props}: Props) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView
-        {...props}
-        style={props.style}
-        behavior={Platform.OS === 'android' ? 'position' : 'padding'}>
+      <KeyboardAwareScrollView {...props} style={props.style}>
         {children}
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 }
