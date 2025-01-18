@@ -11,6 +11,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../App.tsx';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
+
 export default function SignIn({navigation}: SignInScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,8 +32,14 @@ export default function SignIn({navigation}: SignInScreenProps) {
     navigation.navigate('SignUp');
   }, [navigation]);
 
-  const onChangeEmail = useCallback((text: string) => setEmail(text), []);
-  const onChangePassword = useCallback((text: string) => setPassword(text), []);
+  const onChangeEmail = useCallback(
+    (text: string) => setEmail(text.trim()),
+    [],
+  );
+  const onChangePassword = useCallback(
+    (text: string) => setPassword(text.trim()),
+    [],
+  );
 
   const canGoNext = email && password;
   return (
