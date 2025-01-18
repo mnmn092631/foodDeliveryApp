@@ -9,8 +9,9 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../App';
 import DismissKeyboardView from '../components/DismissKeyBoardView.tsx';
+import {RootStackParamList} from '../AppInner.tsx';
+import axios from 'axios';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -31,7 +32,7 @@ export default function SignUp({}: SignUpScreenProps) {
   const onChangePassword = useCallback((text: string) => {
     setPassword(text.trim());
   }, []);
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
@@ -55,6 +56,12 @@ export default function SignUp({}: SignUpScreenProps) {
       );
     }
     console.log(email, name, password);
+    try {
+      const response = await axios.post('/user', {email, name, password});
+      console.log(response);
+    } catch (error) {
+    } finally {
+    }
     Alert.alert('알림', '회원가입 되었습니다.');
   }, [email, name, password]);
 
