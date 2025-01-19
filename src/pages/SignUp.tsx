@@ -17,7 +17,7 @@ import Config from 'react-native-config';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
-export default function SignUp({}: SignUpScreenProps) {
+export default function SignUp({navigation}: SignUpScreenProps) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -64,15 +64,15 @@ export default function SignUp({}: SignUpScreenProps) {
     console.log(email, name, password);
     try {
       setLoading(true);
-      const response = await axios.post(
-        `${Config.API_URL}/user`,
-        {email, name, password},
-        {
-          headers: {},
-        },
-      );
+      console.log(Config.API_URL);
+      const response = await axios.post(`${Config.API_URL}/user`, {
+        email,
+        name,
+        password,
+      });
       console.log(response);
       Alert.alert('알림', '회원가입 되었습니다.');
+      navigation.navigate('SignIn');
     } catch (error) {
       const errorResponse = (error as AxiosError).response;
       console.error(errorResponse);
@@ -82,8 +82,7 @@ export default function SignUp({}: SignUpScreenProps) {
     } finally {
       setLoading(false);
     }
-    Alert.alert('알림', '회원가입 되었습니다.');
-  }, [loading, email, name, password]);
+  }, [loading, email, name, password, navigation]);
 
   const canGoNext = email && name && password;
 
