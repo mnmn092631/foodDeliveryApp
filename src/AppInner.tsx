@@ -17,6 +17,7 @@ import Config from 'react-native-config';
 import userSlice from './slices/user.ts';
 import {Alert} from 'react-native';
 import {useAppDispatch} from './store';
+import orderSlice from './slices/order.ts';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -40,6 +41,7 @@ export default function AppInner() {
   useEffect(() => {
     const callback = (data: any) => {
       console.log(data);
+      dispatch(orderSlice.actions.addOrder(data));
     };
     if (socket && isLoggedIn) {
       socket.emit('acceptOrder', 'hello');
@@ -50,7 +52,7 @@ export default function AppInner() {
         socket.off('order', callback);
       }
     };
-  }, [isLoggedIn, socket]);
+  }, [dispatch, isLoggedIn, socket]);
 
   useEffect(() => {
     if (!isLoggedIn) {
