@@ -38,6 +38,36 @@ export default function AppInner() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
   const [socket, disconnect] = useSocket();
+
+  useEffect(() => {
+    axios.interceptors.response.use(
+      response => {
+        return response;
+      },
+      async error => {
+        const {
+          config,
+          response: {status},
+        } = error;
+        if (status === 419) {
+          if (error.response.data.code === 'expired') {
+            const originalRequest = config;
+            const refreshToken = await EncryptedStorage.getItem('refreshToken');
+            const {data} = await axios.post(
+              `${Config.API_URL}/refreshToken`, // token refresh api
+              {},
+              {headers: {authorization: `Bearer ${refreshToken}`}},
+            );
+            dispatch(userSlice.actions.setAccessToken(data.data.accessToken));
+            originalRequest.headers.authorization = `Bearer ${data.data.accessToken}`;
+            return axios(originalRequest);
+          }
+        }
+        return Promise.reject(error);
+      },
+    );
+  }, [dispatch]);
+
   useEffect(() => {
     const callback = (data: any) => {
       console.log(data);

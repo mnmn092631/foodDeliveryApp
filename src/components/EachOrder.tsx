@@ -18,6 +18,7 @@ function EachOrder({item}: Props) {
   const dispatch = useAppDispatch();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const [detail, showDetail] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onAccept = useCallback(async () => {
     if (!accessToken) {
@@ -30,6 +31,7 @@ function EachOrder({item}: Props) {
         {headers: {authorization: `Bearer ${accessToken}`}},
       );
       dispatch(orderSlice.actions.acceptOrder(item.orderId));
+      setLoading(true);
       navigation.navigate('Delivery');
     } catch (error) {
       let errorResponse = (error as AxiosError).response;
@@ -37,6 +39,7 @@ function EachOrder({item}: Props) {
         // 타인이 이미 수락한 경우
         Alert.alert('알림', (errorResponse.data as {message: string}).message);
         dispatch(orderSlice.actions.rejectOrder(item.orderId));
+        setLoading(true);
       }
     }
   }, [navigation, dispatch, item, accessToken]);
