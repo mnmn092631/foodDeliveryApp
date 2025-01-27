@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Text, View} from 'react-native';
+import {Alert, Dimensions, Text, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import Geolocation from '@react-native-community/geolocation';
@@ -10,6 +10,7 @@ import {
   NaverMapPathOverlay,
   NaverMapView,
 } from '@mj-studio/react-native-naver-map';
+import TMap from '../modules/TMap.ts';
 
 type IngScreenProps = NativeStackScreenProps<LoggedInParamList, 'Delivery'>;
 
@@ -103,6 +104,19 @@ export default function Ing({navigation}: IngScreenProps) {
             anchor={{x: 0.5, y: 0.5}}
             caption={{text: '출발'}}
             image={require('../assets/blue-dot.png')}
+            onTap={() => {
+              TMap.openNavi(
+                '출발지',
+                start.longitude.toString(),
+                start.latitude.toString(),
+                'MOTORCYCLE',
+              ).then(data => {
+                console.log('TMap callback', data);
+                if (!data) {
+                  Alert.alert('알림', '티맵을 설치하세요.');
+                }
+              });
+            }}
           />
           <NaverMapPathOverlay
             coords={[
@@ -113,7 +127,20 @@ export default function Ing({navigation}: IngScreenProps) {
               {latitude: end.latitude, longitude: end.longitude},
             ]}
             color="orange"
-            width={4}
+            width={5}
+            onTap={() => {
+              TMap.openNavi(
+                '도착지',
+                end.longitude.toString(),
+                end.latitude.toString(),
+                'MOTORCYCLE',
+              ).then(data => {
+                console.log('TMap callback', data);
+                if (!data) {
+                  Alert.alert('알림', '티맵을 설치하세요.');
+                }
+              });
+            }}
           />
           <NaverMapMarkerOverlay
             latitude={end.latitude}
