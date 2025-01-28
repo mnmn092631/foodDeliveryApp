@@ -1,5 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
 import {useAppDispatch} from '../store';
@@ -7,12 +15,17 @@ import userSlice from '../slices/user';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import orderSlice, {Order} from '../slices/order.ts';
+import FastImage from 'react-native-fast-image';
+import {useIsFocused} from '@react-navigation/native';
 
 function Settings() {
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const completes = useSelector((state: RootState) => state.order.completes);
   const name = useSelector((state: RootState) => state.user.name);
   const money = useSelector((state: RootState) => state.user.money);
   const dispatch = useAppDispatch();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     async function getMoney() {
@@ -25,7 +38,21 @@ function Settings() {
       dispatch(userSlice.actions.setMoney(response.data.data));
     }
     getMoney();
-  }, [accessToken, dispatch]);
+  }, [accessToken, dispatch, isFocused]);
+
+  useEffect(() => {
+    async function getCompletes() {
+      const response = await axios.get<{data: number}>(
+        `${Config.API_URL}/completes`,
+        {
+          headers: {authorization: `Bearer ${accessToken}`},
+        },
+      );
+      console.log('completes', response.data);
+      dispatch(orderSlice.actions.setCompletes(response.data.data));
+    }
+    getCompletes();
+  }, [dispatch, accessToken, isFocused]);
 
   const onLogout = useCallback(async () => {
     try {
@@ -53,8 +80,21 @@ function Settings() {
     }
   }, [accessToken, dispatch]);
 
+  const renderItem = useCallback(({item}: {item: Order}) => {
+    return (
+      <FastImage
+        source={{uri: `${Config.API_URL}/${item.image}`}}
+        resizeMode="contain"
+        style={{
+          height: Dimensions.get('window').width / 3,
+          width: Dimensions.get('window').width / 3,
+        }}
+      />
+    );
+  }, []);
+
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View style={styles.money}>
         <Text style={styles.moneyText}>
           {name}님의 수익금
@@ -63,6 +103,14 @@ function Settings() {
           </Text>
           원
         </Text>
+      </View>
+      <View style={{flex: 1}}>
+        <FlatList
+          data={completes}
+          numColumns={3}
+          keyExtractor={o => o.orderId}
+          renderItem={renderItem}
+        />
       </View>
       <View style={styles.buttonZone}>
         <Pressable
