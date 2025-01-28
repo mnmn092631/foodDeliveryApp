@@ -20,6 +20,8 @@ import {useAppDispatch} from './store';
 import orderSlice from './slices/order.ts';
 import usePermissions from './hooks/usePermissions.ts';
 import SplashScreen from 'react-native-splash-screen';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -141,17 +143,27 @@ export default function AppInner() {
           <Tab.Screen
             name="Orders"
             component={Orders}
-            options={{title: '오더 목록'}}
+            options={{
+              title: '오더 목록',
+              tabBarIcon: () => <FontAwesome5Icon name="list" size={20} />,
+            }}
           />
           <Tab.Screen
             name="Delivery"
             component={Delivery}
-            options={{headerShown: false}}
+            options={{
+              title: '지도',
+              headerShown: false,
+              tabBarIcon: () => <FontAwesome5Icon name="map" size={20} />,
+            }}
           />
           <Tab.Screen
             name="Settings"
             component={Settings}
-            options={{title: '내 정보'}}
+            options={{
+              title: '내 정보',
+              tabBarIcon: () => <FontAwesome6Icon name="gear" size={20} />,
+            }}
           />
         </Tab.Navigator>
       ) : (
