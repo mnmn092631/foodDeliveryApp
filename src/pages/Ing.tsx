@@ -49,7 +49,9 @@ export default function Ing({navigation}: IngScreenProps) {
   if (!myPosition || !myPosition.latitude) {
     return (
       <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-        <Text>내 위치를 로딩 중입니다. 권한을 허용했는지 확인해주세요.</Text>
+        <Text style={{color: 'black'}}>
+          내 위치를 로딩 중입니다. 권한을 허용했는지 확인해주세요.
+        </Text>
       </View>
     );
   }

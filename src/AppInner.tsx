@@ -1,4 +1,3 @@
-import {NavigationContainer} from '@react-navigation/native';
 import Orders from './pages/Orders.tsx';
 import Delivery from './pages/Delivery.tsx';
 import Settings from './pages/Settings.tsx';
@@ -154,50 +153,55 @@ export default function AppInner() {
     getToken();
   }, [dispatch]);
 
-  return (
-    <NavigationContainer>
-      {isLoggedIn ? (
-        <Tab.Navigator>
-          <Tab.Screen
-            name="Orders"
-            component={Orders}
-            options={{
-              title: '오더 목록',
-              tabBarIcon: () => <FontAwesome5Icon name="list" size={20} />,
-            }}
-          />
-          <Tab.Screen
-            name="Delivery"
-            component={Delivery}
-            options={{
-              title: '지도',
-              headerShown: false,
-              tabBarIcon: () => <FontAwesome5Icon name="map" size={20} />,
-            }}
-          />
-          <Tab.Screen
-            name="Settings"
-            component={Settings}
-            options={{
-              title: '내 정보',
-              tabBarIcon: () => <FontAwesome6Icon name="gear" size={20} />,
-            }}
-          />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="SignIn"
-            component={SignIn}
-            options={{title: '로그인'}}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{title: '회원가입'}}
-          />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
+  return isLoggedIn ? (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Orders"
+        component={Orders}
+        options={{
+          title: '오더 목록',
+          tabBarIcon: ({color}) => (
+            <FontAwesome5Icon name="list" size={20} style={{color}} />
+          ),
+          tabBarActiveTintColor: 'blue',
+        }}
+      />
+      <Tab.Screen
+        name="Delivery"
+        component={Delivery}
+        options={{
+          title: '지도',
+          headerShown: false,
+          tabBarIcon: ({color}) => (
+            <FontAwesome5Icon name="map" size={20} style={{color}} />
+          ),
+          tabBarActiveTintColor: 'blue',
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          title: '내 정보',
+          tabBarIcon: ({color}) => (
+            <FontAwesome6Icon name="gear" size={20} style={{color}} />
+          ),
+          tabBarActiveTintColor: 'blue',
+        }}
+      />
+    </Tab.Navigator>
+  ) : (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{title: '로그인'}}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{title: '회원가입'}}
+      />
+    </Stack.Navigator>
   );
 }

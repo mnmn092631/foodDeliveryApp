@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
   },
   eachInfo: {
     flex: 1,
+    color: 'black',
   },
   buttonWrapper: {
     flexDirection: 'row',
