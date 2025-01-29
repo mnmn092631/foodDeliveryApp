@@ -22,6 +22,7 @@ import usePermissions from './hooks/usePermissions.ts';
 import SplashScreen from 'react-native-splash-screen';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
+import messaging from '@react-native-firebase/messaging';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -134,6 +135,23 @@ export default function AppInner() {
       }
     };
     getTokenAndRefresh();
+  }, [dispatch]);
+
+  useEffect(() => {
+    async function getToken() {
+      try {
+        if (!messaging().isDeviceRegisteredForRemoteMessages) {
+          await messaging().registerDeviceForRemoteMessages();
+        }
+        const token = await messaging().getToken();
+        console.log('phone token', token);
+        dispatch(userSlice.actions.setPhoneToken(token));
+        return axios.post(`${Config.API_URL}/phonetoken`, {token});
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getToken();
   }, [dispatch]);
 
   return (
